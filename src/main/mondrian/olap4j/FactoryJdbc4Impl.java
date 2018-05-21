@@ -15,6 +15,7 @@ import org.olap4j.*;
 
 import java.sql.*;
 import java.util.*;
+import java.util.concurrent.Executor;
 
 /**
  * Implementation of {@link Factory} for JDBC 4.0.
@@ -90,6 +91,18 @@ class FactoryJdbc4Impl implements Factory {
         {
             super(olap4jConnection, headerList, rowList);
         }
+
+		@Override
+		public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public <T> T getObject(String columnLabel, Class<T> type) throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
     }
 
     private static class MondrianOlap4jConnectionJdbc4
@@ -103,6 +116,24 @@ class FactoryJdbc4Impl implements Factory {
         {
             super(factory, driver, url, info);
         }
+
+		@Override
+		public void abort(Executor executor) throws SQLException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public int getNetworkTimeout() throws SQLException {
+			// TODO Auto-generated method stub
+			return 0;
+		}
     }
 
     private static class MondrianOlap4jCellSetJdbc4
@@ -113,6 +144,18 @@ class FactoryJdbc4Impl implements Factory {
         {
             super(olap4jStatement);
         }
+
+		@Override
+		public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public <T> T getObject(String columnLabel, Class<T> type) throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
     }
 
     private static class MondrianOlap4jStatementJdbc4
@@ -123,6 +166,18 @@ class FactoryJdbc4Impl implements Factory {
         {
             super(olap4jConnection);
         }
+
+		@Override
+		public void closeOnCompletion() throws SQLException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public boolean isCloseOnCompletion() throws SQLException {
+			// TODO Auto-generated method stub
+			return false;
+		}
     }
 
     private static class MondrianOlap4jPreparedStatementJdbc4
@@ -135,6 +190,18 @@ class FactoryJdbc4Impl implements Factory {
         {
             super(olap4jConnection, mdx);
         }
+
+		@Override
+		public void closeOnCompletion() throws SQLException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public boolean isCloseOnCompletion() throws SQLException {
+			// TODO Auto-generated method stub
+			return false;
+		}
     }
 
     private static class MondrianOlap4jDatabaseMetaDataJdbc4
@@ -146,6 +213,19 @@ class FactoryJdbc4Impl implements Factory {
         {
             super(olap4jConnection, mondrianConnection);
         }
+
+		@Override
+		public ResultSet getPseudoColumns(String catalog, String schemaPattern, String tableNamePattern,
+				String columnNamePattern) throws SQLException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public boolean generatedKeyAlwaysReturned() throws SQLException {
+			// TODO Auto-generated method stub
+			return false;
+		}
     }
 }
 

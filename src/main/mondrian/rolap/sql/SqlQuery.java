@@ -12,14 +12,26 @@
 */
 package mondrian.rolap.sql;
 
-import mondrian.olap.*;
-import mondrian.rolap.*;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.sql.DataSource;
+
+import mondrian.olap.MondrianDef;
+import mondrian.olap.MondrianProperties;
+import mondrian.olap.Util;
+import mondrian.rolap.RolapStar;
+import mondrian.rolap.RolapUtil;
+import mondrian.rolap.SqlStatement;
 import mondrian.spi.Dialect;
 import mondrian.spi.DialectManager;
 import mondrian.util.Pair;
-
-import java.util.*;
-import javax.sql.DataSource;
 
 /**
  * <code>SqlQuery</code> allows us to build a <code>select</code>
@@ -659,6 +671,14 @@ public class SqlQuery {
             buf, generateFormattedSql, prefix, " from ", ", ", "", "");
         where.toBuffer(
             buf, generateFormattedSql, prefix, " where ", " and ", "", "");
+        // if sql contains sum and not contains where add yesterday condition
+        String pref = buf.toString();
+        if(pref.contains("sum(") && !pref.contains(" where ")) {
+        	Calendar cal = Calendar.getInstance();
+        	cal.add(Calendar.DATE, -1);
+        	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        	buf.append(" where date='").append(formatter.format(cal.getTime())).append("'");
+        }
         if (groupingSets.isEmpty()) {
             groupBy.toBuffer(
                 buf, generateFormattedSql, prefix, " group by ", ", ", "", "");

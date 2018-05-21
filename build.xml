@@ -1331,7 +1331,7 @@ doc/**/*.xml"
         destfile="${jar.file}"
         update="true">
       <zipfileset
-          dir="${classes.dir}"
+          dir="D:/all_code/saiku/mondrian/classes"
           includes="
 **/*.class,
 **/*.properties,

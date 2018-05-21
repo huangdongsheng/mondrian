@@ -12,7 +12,7 @@ rem All Rights Reserved.
 set SRCROOT=%~dp0
 
 if exist "%HOME_DRIVE%" goto homeDriveOk
-set HOME_DRIVE=E
+set HOME_DRIVE=D
 :homeDriveOk
 
 if exist "%JAVA_HOME%" goto javaHomeOk
@@ -22,7 +22,7 @@ echo JAVA_HOME (%JAVA_HOME%) does not exist
 goto end
 :javaHomeOk
 
-echo Using JAVA_HOME %JAVA_HOME%
+echo Using JAVA_HOME '%JAVA_HOME%'
 
 set PATH=%JAVA_HOME%/bin;%PATH%
 

@@ -1075,13 +1075,11 @@ public class RolapStar {
             return buf.toString();
         }
 
-        public String toString() {
-            StringWriter sw = new StringWriter(256);
-            PrintWriter pw = new PrintWriter(sw);
-            print(pw, "");
-            pw.flush();
-            return sw.toString();
-        }
+        @Override
+		public String toString() {
+			return "Column [table=" + table==null ? "": table.getAlias() + ", expression=" + expression== null ? "": expression.getGenericExpression()
+					+ ", name=" + name + "]";
+		}
 
         /**
          * Prints this column.
@@ -1162,6 +1160,8 @@ public class RolapStar {
         public SqlStatement.Type getInternalType() {
             return internalType;
         }
+        
+        
     }
 
     /**
@@ -1232,6 +1232,17 @@ public class RolapStar {
         public String getCubeName() {
             return cubeName;
         }
+
+		@Override
+		public String toString() {
+			SqlQuery sqlQuery = getSqlQuery();
+			return "Measure [cubeName=" + cubeName + ", aggregator=" + aggregator.getExpression(
+                    getExpression() == null
+                    ? null
+                    : generateExprString(sqlQuery)) + "]";
+		}
+        
+        
     }
 
     /**
