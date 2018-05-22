@@ -17,7 +17,10 @@ import mondrian.spi.Dialect;
 import mondrian.spi.StatisticsProvider;
 
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
+
 import javax.sql.DataSource;
 
 /**
@@ -151,6 +154,13 @@ public class SqlStatisticsProvider implements StatisticsProvider {
                 .append(exprString)
                 .append(") from ");
             dialect.quoteIdentifier(buf, schema, table);
+            // TODO 修改distinct查询，加快查询速度
+            if(table.contains("cube_") && !buf.toString().contains("month")) {
+            	Calendar cal = Calendar.getInstance();
+            	cal.add(Calendar.DATE, -1);
+            	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            	buf.append(" where date='").append(formatter.format(cal.getTime())).append("'");
+            }
             return buf.toString();
         } else if (dialect.allowsFromQuery()) {
             // Some databases (e.g. Access) don't like 'count(distinct)',
@@ -160,6 +170,13 @@ public class SqlStatisticsProvider implements StatisticsProvider {
                 .append(exprString)
                 .append(" from ");
             dialect.quoteIdentifier(buf, schema, table);
+            // TODO 修改distinct查询，加快查询速度
+            if(table.contains("cube_") && !buf.toString().contains("month")) {
+            	Calendar cal = Calendar.getInstance();
+            	cal.add(Calendar.DATE, -1);
+            	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            	buf.append(" where date='").append(formatter.format(cal.getTime())).append("'");
+            }
             buf.append(")");
             if (dialect.requiresAliasForFromQuery()) {
                 if (dialect.allowsAs()) {

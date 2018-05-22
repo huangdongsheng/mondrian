@@ -15,6 +15,7 @@ package mondrian.rolap.sql;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,6 +23,8 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.sql.DataSource;
+
+import org.apache.log4j.Logger;
 
 import mondrian.olap.MondrianDef;
 import mondrian.olap.MondrianProperties;
@@ -82,6 +85,7 @@ import mondrian.util.Pair;
  * @author jhyde
  */
 public class SqlQuery {
+	private static final Logger logger = Logger.getLogger(SqlQuery.class);
     /** Controls the formatting of the sql string. */
     private final boolean generateFormattedSql;
 
@@ -673,12 +677,31 @@ public class SqlQuery {
             buf, generateFormattedSql, prefix, " where ", " and ", "", "");
         // if sql contains sum and not contains where add yesterday condition
         String pref = buf.toString();
-        if(pref.contains("sum(") && !pref.contains(" where ")) {
+        if(!pref.contains("month")) {
+        	// TODO
+        	logger.debug(">>>>>>>>> generate sql pref:" + pref);
         	Calendar cal = Calendar.getInstance();
         	cal.add(Calendar.DATE, -1);
         	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        	buf.append(" where date='").append(formatter.format(cal.getTime())).append("'");
+        	String yesterday = formatter.format(cal.getTime());
+        	cal.setTime(new Date());
+        	cal.set(Calendar.DAY_OF_MONTH, 1);
+        	cal.add(Calendar.DATE, -1);
+        	String lastMonth = formatter.format(cal.getTime());
+        	// 查询昨天与上个月最后一天数据，按月的报表需要查询上月最后一天
+        	if(pref.contains("sum(") && !pref.contains(" where ")) {
+        		String condition = String.format(" date in ('%s', '%s') ", lastMonth, yesterday);
+            	buf.append(" where ").append(condition);
+            }else if(fromAliases.get(0).contains("cube") && !pref.contains("`date`")) {
+            	String condition = String.format(" %s.date in ('%s', '%s') ", fromAliases.get(0), lastMonth, yesterday);
+            	if(pref.contains(" where ")) {
+            		buf.append(" and ").append(condition);
+            	}else {
+            		buf.append(" where ").append(condition);
+            	}
+            }
         }
+        
         if (groupingSets.isEmpty()) {
             groupBy.toBuffer(
                 buf, generateFormattedSql, prefix, " group by ", ", ", "", "");
